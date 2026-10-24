@@ -37,3 +37,23 @@ changes were intentionally skipped.
 - `.github/workflows/*`
 - `README.md`, `CHANGELOG.md`
 - Dusk / CI test changes
+
+## Security audit follow-ups (v2.2.5)
+
+The upstream advisories for `/admin/auth/menu` and `/admin/auth/extensions`
+(CVE-2024-54775 / GHSA-37x3-j9jq-vrjx) had no official patched release, so the
+remaining vectors were fixed here:
+
+- Menu titles are escaped in `resources/views/partials/menu.blade.php`.
+- Menu tree payload escapes `title`, `icon` and `uri`
+  (`src/Http/Controllers/MenuController.php`).
+- Toastr messages are JSON-encoded with `@json()` and the type is allow-listed
+  (`resources/views/partials/toastr.blade.php`).
+- Markdown textarea content and color preview value are escaped.
+
+Known remaining / accepted surfaces (not changed):
+
+- `partials/alerts.blade.php` and `partials/exception.blade.php` intentionally
+  render raw HTML; they are developer-controlled (exception page is debug-only).
+- `form/display.blade.php` is a developer-facing "display raw HTML" field.
+- Grid column values are escaped by default via `Column::htmlEntityEncode()`.
